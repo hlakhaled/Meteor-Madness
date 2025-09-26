@@ -17,7 +17,7 @@ export default function Navbar() {
   const [open, setOpen] = useState(false);
 
   return (
-    <header className="w-full py-4 flex items-center justify-between md:justify-around bg-black text-white">
+    <header className=" w-full py-4 px-6 md:px-0 flex items-center justify-between md:justify-around bg-black text-white">
       {/* Logo */}
       <NavLink
         to="/"
@@ -36,7 +36,7 @@ export default function Navbar() {
 
       {/* Desktop Nav */}
       <nav className="hidden md:flex items-center">
-        <ul className="flex gap-10">
+        <ul className="flex gap-8">
           {navLinks.map((link, idx) => (
             <li key={idx}>
               <NavLink
@@ -66,7 +66,7 @@ export default function Navbar() {
 
       {/* Mobile Menu */}
       {open && (
-        <nav className="absolute top-16 left-0 w-full bg-black px-6 pb-4 md:hidden">
+        <nav className="absolute top-16 sm:top-24 left-0 w-full bg-black px-6 pb-4 md:hidden">
           <ul className="flex flex-col gap-4">
             {navLinks.map((link, idx) => (
               <li key={idx}>
