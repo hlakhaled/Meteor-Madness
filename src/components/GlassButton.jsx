@@ -1,8 +1,9 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
-const GlassButton = ({ label }) => {
-  return (
-    <button
+const GlassButton = ({ label, to, onClick }) => {
+  const ButtonContent = (
+    <span
       className="relative flex-1 min-w-[200px] px-6 py-4 rounded-2xl text-white text-base md:text-lg font-normal 
                  bg-white/10 backdrop-blur-[56px] hover:bg-white/20 
                  hover:scale-105 transition-all duration-300 overflow-hidden
@@ -30,6 +31,22 @@ const GlassButton = ({ label }) => {
       <span className="relative z-10 text-white font-normal [text-shadow:_0px_5px_9px_rgb(140_88_243_/_0.70)]">
         {label}
       </span>
+    </span>
+  );
+
+
+  if (to) {
+    return (
+      <Link to={to} className="flex-1">
+        {ButtonContent}
+      </Link>
+    );
+  }
+
+
+  return (
+    <button onClick={onClick} className="flex-1">
+      {ButtonContent}
     </button>
   );
 };

@@ -3,7 +3,11 @@ import introVideo from "../assets/intro.mp4";
 import GlassButton from "../components/GlassButton";
 
 const ExplorePage = () => {
-  const buttons = ["Defend Earth", "Asteroid Simulation", "Fun Facts"];
+  const buttons = [
+    { label: "Defend Earth", to: "/defend-earth" },
+    { label: "Asteroid Simulation", to: "/asteroid-simulation" },
+    { label: "Fun Facts", to: "/fun-facts" },
+  ];
 
   return (
     <div className="w-screen h-screen relative overflow-hidden">
@@ -31,8 +35,8 @@ const ExplorePage = () => {
 
         {/* Buttons */}
         <div className="flex flex-col sm:flex-row gap-6 w-full max-w-4xl">
-          {buttons.map((label, idx) => (
-            <GlassButton key={idx} label={label} />
+          {buttons.map((btn, idx) => (
+            <GlassButton key={idx} label={btn.label} to={btn.to} />
           ))}
         </div>
       </div>
