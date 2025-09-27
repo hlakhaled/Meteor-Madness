@@ -48,7 +48,7 @@ function FactCard({ fact, index }) {
       )}
 
       {/* Fact text */}
-      <p className="font-['Inter'] text-xs sm:text-sm font-light mb-4">
+      <p className="font-['Inter'] text-xs sm:text-sm font-light mb-4 line-clamp-3">
         {fact.fact}
       </p>
 

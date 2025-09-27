@@ -1,14 +1,16 @@
-import React from "react"; 
+import React from "react";
 import { useNavigate } from "react-router-dom";
 import FactCard from "../components/FactCard";
 import SizeCard from "../components/SizeCard";
 import DefenseStrategies from "../components/DefenseStrategies";
 import { assets } from "../assets/assets";
+import { motion } from "framer-motion";
+
 const FunFacts = () => {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
+
   const sizes = [
     {
-      
       name: "House",
       size: "20m",
       damage: "Local destruction",
@@ -37,6 +39,7 @@ const FunFacts = () => {
       scale: 75,
     },
   ];
+
   const funFacts = [
     {
       title: "Dinosaur Extinction",
@@ -88,10 +91,35 @@ const FunFacts = () => {
     },
   ];
 
+  // Reusable fade/slide animation for sections
+  const sectionVariants = {
+    hidden: { opacity: 0, y: 40 },
+    show: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" } },
+  };
+
+  // Fact cards animation (unchanged)
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: { staggerChildren: 0.2, delayChildren: 0.3 },
+    },
+  };
+  const cardVariants = {
+    hidden: { opacity: 0, y: 40 },
+    show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } },
+  };
+
   return (
     <div className="max-w-7xl mx-auto px-6 sm:px-12 lg:px-20 py-12">
       {/* Header */}
-      <div className="text-center mb-12">
+      <motion.div
+        className="text-center mb-12"
+        variants={sectionVariants}
+        initial="hidden"
+        whileInView="show"
+        viewport={{ once: true, amount: 0.2 }}
+      >
         <h1 className="text-2xl sm:text-3xl lg:text-5xl font-bold mb-4 [text-shadow:#8c58f3_4px_8px_24px]">
           Asteroid Fun Facts
         </h1>
@@ -99,53 +127,85 @@ const FunFacts = () => {
           Discover fascinating facts about asteroids, meteor impacts, and how we
           defend our planet from cosmic threats.
         </p>
-      </div>
+      </motion.div>
 
       {/* Size Comparison */}
-      <div className="bg-gradient-to-r from-[#1a1a1a] to-[#2d1b4e] border border-[#8c58f3]/40 rounded-2xl p-6 sm:p-10 shadow-lg mb-12">
+      <motion.div
+        className="bg-gradient-to-r from-[#1a1a1a] to-[#2d1b4e] border border-[#8c58f3]/40 rounded-2xl p-6 sm:p-10 shadow-lg mb-12"
+        variants={sectionVariants}
+        initial="hidden"
+        whileInView="show"
+        viewport={{ once: true, amount: 0.2 }}
+      >
         <h2 className="text-white text-xl sm:text-2xl lg:text-3xl font-normal mb-8 text-center">
           Asteroid Size Comparison
         </h2>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 sm:gap-8 ">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 sm:gap-8">
           {sizes.map((size, index) => (
             <SizeCard key={index} size={size} />
           ))}
         </div>
-      </div>
+      </motion.div>
+
+      {/* Fun Facts (keep card motion) */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+        {" "}
         {funFacts.map((fact, index) => (
-          <FactCard key={index} fact={fact} index={index} />
-        ))}
+          <motion.div
+            key={index}
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.2 }}
+            transition={{ duration: 0.6, delay: index * 0.1 }}
+          >
+            {" "}
+            <FactCard fact={fact} index={index} />{" "}
+          </motion.div>
+        ))}{" "}
       </div>
+
+      {/* Defense Strategies */}
+      <motion.div
+        variants={sectionVariants}
+        initial="hidden"
+        whileInView="show"
+        viewport={{ once: true, amount: 0.2 }}
+      >
         <DefenseStrategies />
-        
-          <div className="mt-12 text-center">
-            <div className="bg-gradient-to-r from-[#8c58f3] to-[#a566ff] rounded-xl p-8">
-              <h2 className=" font-normal sm:text-4xl text-2xl mb-4">
-                Want to Test Your Skills?
-              </h2>
-              <p className=" font-light text-sm font-['Inter'] mb-6">
-                Try our asteroid deflection simulator or explore impact
-                scenarios on the world map!
-              </p>
-              <div className="flex sm:gap-4 sm:flex-row flex-col  gap-8 justify-center">
-                <button
-                  onClick={() => navigate("/defend-earth")}
-                  className="bg-transparent border-2 border-white text-white sm:px-8 px-6  py-3 rounded-lg text-sm sm:text-xl hover:bg-white hover:text-[#8c58f3] transition-all"
-                >
-                  Defend Earth
-                </button>
-                <button
-                  onClick={() => navigate("/asteroid-simulation")}
-                  className="bg-transparent border-2 border-white text-white sm:px-8 px-6  py-3 rounded-lg text-sm sm:text-xl hover:bg-white hover:text-[#8c58f3] transition-all"
-                >
-                  Simulate Impacts
-                </button>
-              </div>
-            </div>
+      </motion.div>
+
+      {/* CTA Section */}
+      <motion.div
+        className="mt-12 text-center"
+        variants={sectionVariants}
+        initial="hidden"
+        whileInView="show"
+        viewport={{ once: true, amount: 0.2 }}
+      >
+        <div className="bg-gradient-to-r from-[#8c58f3] to-[#a566ff] rounded-xl p-8">
+          <h2 className="font-normal sm:text-4xl text-2xl mb-4">
+            Want to Test Your Skills?
+          </h2>
+          <p className="font-light text-sm font-['Inter'] mb-6">
+            Try our asteroid deflection simulator or explore impact scenarios on
+            the world map!
+          </p>
+          <div className="flex sm:gap-4 sm:flex-row flex-col gap-8 justify-center">
+            <button
+              onClick={() => navigate("/defend-earth")}
+              className="bg-transparent border-2 border-white text-white sm:px-8 px-6 py-3 rounded-lg text-sm sm:text-xl hover:bg-white hover:text-[#8c58f3] transition-all"
+            >
+              Defend Earth
+            </button>
+            <button
+              onClick={() => navigate("/asteroid-simulation")}
+              className="bg-transparent border-2 border-white text-white sm:px-8 px-6 py-3 rounded-lg text-sm sm:text-xl hover:bg-white hover:text-[#8c58f3] transition-all"
+            >
+              Simulate Impacts
+            </button>
           </div>
-     
+        </div>
+      </motion.div>
     </div>
   );
 };
