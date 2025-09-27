@@ -11,12 +11,14 @@ import ImpactFrequency from "./ImpactFrequency.svg";
 import NearMisses from "./NearMisses.svg";
 import SpeedDemons from "./SpeedDemons.svg";
 import TunguskaEvent from "./TunguskaEvent.svg";
+import about from "./about.svg";
 // VIDEO
 import introVideo from "./intro.mp4";
 
 export const assets = {
   introVideo,
   rockImage,
+  about,
   ChelyabinskMeteor,
   DailyVisitors,
   DinosaurExtinction,   
