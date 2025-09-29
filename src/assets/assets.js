@@ -12,6 +12,8 @@ import NearMisses from "./NearMisses.svg";
 import SpeedDemons from "./SpeedDemons.svg";
 import TunguskaEvent from "./TunguskaEvent.svg";
 import about from "./about.svg";
+import astroidIcon from "./astroidIcon.svg"
+import measure from "./measure.svg"
 // VIDEO
 import introVideo from "./intro.mp4";
 
@@ -27,5 +29,7 @@ export const assets = {
   NearMisses,
   SpeedDemons,
   TunguskaEvent,
+  astroidIcon,
+  measure,
   
 };
