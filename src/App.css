@@ -1,9 +1,10 @@
 #root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
+  max-width: 100%;   /* full width */
+  margin: 0;
+  padding: 0;        /* remove the padding that makes "border" effect */
   text-align: center;
 }
+
 
 .logo {
   height: 6em;
@@ -39,4 +40,74 @@
 
 .read-the-docs {
   color: #888;
+}
+
+.purple-btn:hover {
+  transform: scale(1.05);
+}
+
+.astro-card {
+  width: 100%;
+  max-width: 260px;
+  min-width: 200px;
+  aspect-ratio: 230 / 241;
+  border-radius: 12px;
+  border: 1px solid rgba(94, 42, 196, 0.5);
+  background: linear-gradient(180deg, #1a1a1a 0%, #0f0f0f 100%);
+  box-shadow: 0 4px 16px rgba(94, 42, 196, 0.6);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 20px;
+  color: white;
+  text-align: center;
+  font-family: "Kameron", serif;
+  cursor: pointer;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.astro-card:hover {
+  transform: translateY(-6px) scale(1.03);
+  box-shadow: 0 6px 20px rgba(94, 42, 196, 0.9);
+}
+
+.astro-title {
+  font-family: Kameron;
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.astro-svgs {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.astro-svg1 {
+  width: 90px;
+  height: 90px;
+}
+
+.astro-svg2 {
+  width: 100px;
+  height: 30px;
+}
+
+.astro-size {
+  font-size: 14px;
+  font-family: Kameron;
+}
+
+.astro-estimated {
+  color: #55d6be;
+  font-size: 12px;
+  font-family: Kameron;
+}
+
+.astro-speed {
+  font-size: 16px;
+  font-weight: 700;
+  font-family: Kameron;
 }
