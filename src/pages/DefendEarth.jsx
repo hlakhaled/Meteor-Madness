@@ -149,16 +149,6 @@ const DEFLECTION_METHODS = {
   },
 };
 
-function AboutChallenge({ children }) {
-  return (
-    <div className="h-[49.2px] relative shrink-0 w-[165.6px]">
-      <div className="absolute bottom-[0.41%] font-[Jaini] leading-[0] left-0 not-italic right-[-0.24%] text-[37.44px] text-nowrap text-white top-0">
-        <p className="leading-[normal] whitespace-pre">{children}</p>
-      </div>
-    </div>
-  );
-}
-
 /* ----------------- Game components ----------------- */
 function AsteroidInfo({ asteroid }) {
   const sizeMultiplier = { small: 1, medium: 2.5, large: 5, massive: 10 };
@@ -372,7 +362,6 @@ function DeflectionControls({
             onChange={(e) => onPowerChange(parseInt(e.target.value))}
             className="w-full h-2 bg-gray-700 rounded-lg accent-purple-500"
           />
-          <Progress value={gameState.power} className="h-2" />
         </div>
 
         <div className="space-y-2">
@@ -460,7 +449,7 @@ function GameStats({ gameState }) {
 }
 
 /* ----------------- Enhanced 3D Simulation with realistic physics ----------------- */
-function Enhanced3DSimulation({ gameState, onComplete, onStateUpdate }) {
+function Enhanced3DSimulation({ gameState, onComplete }) {
   const [simulationProgress, setSimulationProgress] = useState(0);
 
   const asteroid = gameState.currentAsteroid;
@@ -721,9 +710,14 @@ export default function DefendEarth() {
   }
 
   return (
-   // max-w-7xl mx-auto px-6 sm:px-12 lg:px-20 py-12
- <div className="bg-black mx-auto px-6 sm:px-12 lg:px-20 py-12 relative min-h-screen overflow-hidden text-white">
-      <div className="absolute left-6 top-36 bottom-6 w-80 overflow-auto z-20 space-y-4">
+    // max-w-7xl mx-auto px-6 sm:px-12 lg:px-20 py-12
+    <div className="bg-black  mx-auto px-6 sm:px-12 lg:px-20 py-12 relative min-h-screen overflow-hidden text-white">
+      {/* Left controls column */}
+      <div
+        className="absolute left-6 top-0 bottom-6 w-80 overflow-y-auto z-20 space-y-4
+             scrollbar-thin scrollbar-thumb-purple-500 scrollbar-track-gray-900/30
+             p-4"
+      >
         <AsteroidInfo asteroid={gameState.currentAsteroid} />
         <DeflectionControls
           gameState={gameState}
@@ -782,7 +776,7 @@ export default function DefendEarth() {
       </div>
 
       {/* Right stats column */}
-      <div className="absolute right-6 top-36 w-64 z-20">
+      <div className="absolute right-6 top-0 w-64 z-20">
         <GameStats gameState={gameState} />
       </div>
 
