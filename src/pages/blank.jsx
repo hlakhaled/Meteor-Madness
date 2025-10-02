@@ -1,4 +1,8 @@
 import React, { useState, useEffect, useCallback } from "react";
+// import svgPaths from "../assets/svg-60ozkdald8";
+// import imgScreenshot20250924At73440Pm1BackgroundRemoved1 from "../assets/astroid.svg";
+// import imgEarth from "../assets/earth.svg";
+
 import {
   AlertTriangle,
   Target,
@@ -10,8 +14,6 @@ import {
   Eye,
   RotateCcw,
 } from "lucide-react";
-import { Simulation3D } from "../components/Simulation3D";
-import { Simulation2D } from "../components/Simulation2D";
 
 /* ----------------- Minimal UI primitives (self contained) ----------------- */
 const Card = ({ children, className = "" }) => (
@@ -149,12 +151,50 @@ const DEFLECTION_METHODS = {
   },
 };
 
+/* ----------------- Figma UI pieces (static) ----------------- */
+function Logo() {
+  return (
+    <div
+      className="absolute h-[88px] left-[41px] top-[48px] w-[241px]"
+      data-name="logo"
+    >
+      <div
+        className="absolute h-[64px] left-0 top-[10px] w-[102px]"
+        data-name="logo-img"
+      >
+        {/* <img
+          alt=""
+          className="absolute inset-0 max-w-none object-cover w-full h-full pointer-events-none"
+          src={imgScreenshot20250924At73440Pm1BackgroundRemoved1}
+        /> */}
+      </div>
+      <div className="[text-shadow:#8c58f3_0px_1.95px_7.8px] absolute font-[Jaini] leading-[0] left-[40.95px] not-italic text-[31.2px] text-nowrap text-white top-[23.4px]">
+        <p className="leading-[normal] whitespace-pre">Meteor Madness</p>
+      </div>
+    </div>
+  );
+}
+
 function AboutChallenge({ children }) {
   return (
     <div className="h-[49.2px] relative shrink-0 w-[165.6px]">
       <div className="absolute bottom-[0.41%] font-[Jaini] leading-[0] left-0 not-italic right-[-0.24%] text-[37.44px] text-nowrap text-white top-0">
         <p className="leading-[normal] whitespace-pre">{children}</p>
       </div>
+    </div>
+  );
+}
+
+function NavigationBar() {
+  return (
+    <div
+      className="absolute content-stretch flex gap-[64px] h-[98px] items-center left-1/2 transform -translate-x-1/2"
+      style={{ top: "48px", width: "965px" }}
+    >
+      <AboutChallenge>Defend Earth</AboutChallenge>
+      <AboutChallenge>Astroids Simulation</AboutChallenge>
+      <AboutChallenge>Fun Facts</AboutChallenge>
+      <AboutChallenge>About challenge</AboutChallenge>
     </div>
   );
 }
@@ -330,10 +370,10 @@ function DeflectionControls({
                 <button
                   key={key}
                   onClick={() => onMethodChange(key)}
-                  className={`p-3 flex flex-col items-center gap-1 text-xs rounded-md border transition ${
+                  className={`p-3 flex flex-col items-center gap-1 text-xs rounded-md border ${
                     active
-                      ? "bg-purple-600 border-purple-400"
-                      : "border-purple-500 bg-transparent hover:bg-purple-900/30"
+                      ? "bg-purple-600"
+                      : "border-purple-500 bg-transparent"
                   } `}
                 >
                   <Icon className="h-4 w-4" />
@@ -370,7 +410,7 @@ function DeflectionControls({
             max={currentMethod.power}
             value={gameState.power}
             onChange={(e) => onPowerChange(parseInt(e.target.value))}
-            className="w-full h-2 bg-gray-700 rounded-lg accent-purple-500"
+            className="w-full h-2 bg-gray-700 rounded-lg"
           />
           <Progress value={gameState.power} className="h-2" />
         </div>
@@ -389,7 +429,7 @@ function DeflectionControls({
             step="0.5"
             value={gameState.angle}
             onChange={(e) => onAngleChange(parseFloat(e.target.value))}
-            className="w-full h-2 bg-gray-700 rounded-lg accent-purple-500"
+            className="w-full h-2 bg-gray-700 rounded-lg"
           />
         </div>
 
@@ -459,86 +499,121 @@ function GameStats({ gameState }) {
   );
 }
 
-/* ----------------- Enhanced 3D Simulation with realistic physics ----------------- */
+/* ----------------- Enhanced 3D Simulation (fallback 2D visual) ----------------- */
 function Enhanced3DSimulation({ gameState, onComplete, onStateUpdate }) {
-  const [simulationProgress, setSimulationProgress] = useState(0);
+  const [progress, setProgress] = useState(0);
+  const [deflectionEffect, setDeflectionEffect] = useState(0);
 
   const asteroid = gameState.currentAsteroid;
   const method = DEFLECTION_METHODS[gameState.deflectionMethod];
   const effectiveness = method.effectiveness[asteroid.composition];
 
-  const handleProgress = useCallback(
-    (progress) => {
-      setSimulationProgress(progress);
+  useEffect(() => {
+    if (!gameState.isSimulating) return;
 
-      if (progress >= 1) {
-        // Calculate success based on improved physics
-        const powerFactor = gameState.power / 100;
-        const angleFactor = Math.max(
-          0,
-          1 - Math.abs(gameState.angle - 22.5) / 22.5
-        );
-        const sizePenalty = { small: 1, medium: 0.8, large: 0.6, massive: 0.4 }[
-          asteroid.size
-        ];
-        const speedPenalty = Math.max(0.3, 1 - (asteroid.speed - 5) / 20);
-        const distanceBonus = Math.min(1.5, asteroid.distance / 500000);
+    const duration = 5000;
+    const startTime = Date.now();
+    let animationId = null;
+    let lastUpdateTime = 0;
 
-        const totalEffectiveness =
-          effectiveness *
-          powerFactor *
-          angleFactor *
-          sizePenalty *
-          speedPenalty *
-          distanceBonus;
-        const deflectionAmount = totalEffectiveness * gameState.angle;
+    const powerFactor = gameState.power / 100;
+    const angleFactor = Math.max(
+      0,
+      1 - Math.abs(gameState.angle - 22.5) / 22.5
+    );
+    const sizePenalty = { small: 1, medium: 0.8, large: 0.6, massive: 0.4 }[
+      asteroid.size
+    ];
+    const speedPenalty = Math.max(0.3, 1 - (asteroid.speed - 5) / 20);
+    const distanceBonus = Math.min(1.5, asteroid.distance / 500000);
+    const totalEffectiveness =
+      effectiveness *
+      powerFactor *
+      angleFactor *
+      sizePenalty *
+      speedPenalty *
+      distanceBonus;
 
-        // Success if deflection is sufficient (at least 15 degrees for safety)
-        const success = deflectionAmount >= 15 && totalEffectiveness > 0.5;
+    const animate = () => {
+      const elapsed = Date.now() - startTime;
+      const currentProgress = Math.min(elapsed / duration, 1);
+      setProgress(currentProgress * 100);
 
-        setTimeout(() => onComplete(success), 500);
+      const deflection = totalEffectiveness * currentProgress * gameState.angle;
+      setDeflectionEffect(deflection);
+
+      const baseX = 50 - currentProgress * 40;
+      const baseY = 20 - currentProgress * 15;
+      const baseZ = -30 + currentProgress * 25;
+
+      const deflectedX = baseX + deflection * 0.8;
+      const deflectedY = baseY - deflection * 0.4;
+      const deflectedZ = baseZ + deflection * 0.6;
+
+      if (elapsed - lastUpdateTime > 50) {
+        onStateUpdate({
+          asteroidPosition: { x: deflectedX, y: deflectedY, z: deflectedZ },
+          showDeflectionBeam: deflection > 0.1,
+        });
+        lastUpdateTime = elapsed;
       }
-    },
-    [effectiveness, gameState.power, gameState.angle, asteroid, onComplete]
-  );
+
+      if (currentProgress < 1) {
+        animationId = requestAnimationFrame(animate);
+      } else {
+        const distanceFromEarth = Math.sqrt(
+          deflectedX * deflectedX +
+            deflectedY * deflectedY +
+            deflectedZ * deflectedZ
+        );
+        const successChance = totalEffectiveness * 100;
+        const success = successChance >= 50 && distanceFromEarth > 8;
+        setTimeout(() => onComplete(success), 700);
+      }
+    };
+
+    animationId = requestAnimationFrame(animate);
+
+    return () => {
+      if (animationId) cancelAnimationFrame(animationId);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [gameState.isSimulating]); // values precomputed inside to avoid unnecessary restarts
 
   return (
     <div className="absolute inset-0 pointer-events-none">
       {gameState.use3DView ? (
-        <div className="absolute inset-0 pointer-events-auto">
-          <Simulation3D
-            asteroid={asteroid}
-            deflectionAngle={gameState.angle}
-            deflectionPower={gameState.power}
-            effectiveness={effectiveness}
-            onProgress={handleProgress}
-          />
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="w-[60%] h-[60%] rounded-2xl bg-gradient-to-b from-purple-900/40 to-black/40 flex items-center justify-center text-white/70">
+            3D View (placeholder)
+          </div>
         </div>
       ) : (
-        <div className="absolute inset-0 pointer-events-auto">
-          <Simulation2D
-            asteroid={asteroid}
-            deflectionAngle={gameState.angle}
-            deflectionPower={gameState.power}
-            effectiveness={effectiveness}
-            onProgress={handleProgress}
-          />
+        <div className="absolute inset-0 bg-gradient-to-b from-purple-900/20 via-black to-blue-900/20 flex items-center justify-center">
+          <div className="text-white text-center">
+            <div className="text-lg mb-2">2D Simulation Mode</div>
+            <div className="text-sm text-gray-300">
+              Switch to 3D view for full experience
+            </div>
+          </div>
         </div>
       )}
 
-      <div className="absolute top-4 left-1/2 transform -translate-x-1/2 bg-black/90 border border-purple-500 rounded-lg p-4 min-w-[320px] pointer-events-auto z-10">
+      <div className="absolute top-4 left-1/2 transform -translate-x-1/2 bg-black/90 border border-purple-500 rounded-lg p-4 min-w-[320px] pointer-events-auto">
         <div className="text-white text-center mb-3">
           <div className="text-lg font-semibold text-purple-300">
             Mission in Progress
           </div>
           <div className="text-sm text-gray-400">Method: {method.name}</div>
         </div>
-        <Progress value={simulationProgress * 100} className="h-3 mb-3" />
+        <Progress value={progress} className="h-3 mb-3" />
         <div className="grid grid-cols-2 gap-4 text-xs text-gray-300">
           <div>
-            <div className="font-semibold text-purple-300">View Mode</div>
+            <div className="font-semibold text-purple-300">Deflection</div>
             <div>
-              {gameState.use3DView ? "3D Interactive" : "2D Trajectory"}
+              {deflectionEffect > 0
+                ? `${deflectionEffect.toFixed(2)}°`
+                : "Building up..."}
             </div>
           </div>
           <div>
@@ -547,10 +622,22 @@ function Enhanced3DSimulation({ gameState, onComplete, onStateUpdate }) {
           </div>
         </div>
 
-        {simulationProgress > 0.5 && (
+        {progress > 50 && (
           <div className="mt-3 text-center">
-            <div className="text-sm font-semibold text-yellow-400">
-              DEFLECTION IN PROGRESS...
+            <div
+              className={`text-sm font-semibold ${
+                deflectionEffect > 15
+                  ? "text-green-400"
+                  : deflectionEffect > 8
+                  ? "text-yellow-400"
+                  : "text-red-400"
+              }`}
+            >
+              {deflectionEffect > 15
+                ? "EXCELLENT DEFLECTION!"
+                : deflectionEffect > 8
+                ? "MODERATE DEFLECTION"
+                : "MINIMAL EFFECT"}
             </div>
           </div>
         )}
@@ -721,8 +808,36 @@ export default function DefendEarth() {
   }
 
   return (
-   // max-w-7xl mx-auto px-6 sm:px-12 lg:px-20 py-12
- <div className="bg-black mx-auto px-6 sm:px-12 lg:px-20 py-12 relative min-h-screen overflow-hidden text-white">
+    <div className="bg-black relative min-h-screen overflow-hidden text-white">
+      <Logo />
+      <NavigationBar />
+
+      {/* Earth image */}
+      <div className="absolute left-[46%] top-[20%] w-[360px] h-[360px] -translate-x-1/2 -translate-y-1/2">
+        {/* <img
+          alt="earth"
+          src={imgEarth}
+          className="w-full h-full object-cover rounded-full drop-shadow-2xl"
+        /> */}
+      </div>
+
+      {/* Asteroid path SVG */}
+      <div className="absolute right-[10%] top-[18%] w-[420px] h-[520px]">
+        {/* <svg className="w-full h-full" fill="none" preserveAspectRatio="none" viewBox="0 0 706 872">
+          <path d={svgPaths.pec5d300} stroke="#F7F7F7" strokeWidth="6" strokeLinecap="round" />
+        </svg>  */}
+      </div>
+
+      {/* small asteroid image */}
+      <div className="absolute right-[12%] top-[22%] w-[90px] h-[90px]">
+        {/* <img
+          alt="asteroid"
+          src={imgScreenshot20250924At73440Pm1BackgroundRemoved1}
+          className="w-full h-full object-cover"
+        /> */}
+      </div>
+
+      {/* Left controls column */}
       <div className="absolute left-6 top-36 bottom-6 w-80 overflow-auto z-20 space-y-4">
         <AsteroidInfo asteroid={gameState.currentAsteroid} />
         <DeflectionControls
@@ -775,7 +890,7 @@ export default function DefendEarth() {
         <Button
           onClick={startSimulation}
           disabled={gameState.isSimulating}
-          className="w-full h-14 text-xl font-bold bg-red-600 hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full h-14 text-xl font-bold bg-red-600 hover:bg-red-700"
         >
           {gameState.isSimulating ? "DEFLECTING..." : "LAUNCH MISSION"}
         </Button>
@@ -788,15 +903,13 @@ export default function DefendEarth() {
 
       {/* Simulation area */}
       <div className="absolute inset-0">
-        {gameState.isSimulating && (
-          <Enhanced3DSimulation
-            gameState={gameState}
-            onComplete={onSimulationComplete}
-            onStateUpdate={(updates) =>
-              setGameState((p) => ({ ...p, ...updates }))
-            }
-          />
-        )}
+        <Enhanced3DSimulation
+          gameState={gameState}
+          onComplete={onSimulationComplete}
+          onStateUpdate={(updates) =>
+            setGameState((p) => ({ ...p, ...updates }))
+          }
+        />
       </div>
 
       {/* Tutorial overlay */}
@@ -843,9 +956,6 @@ export default function DefendEarth() {
                   </li>
                   <li>• Larger asteroids need more power and optimal angles</li>
                   <li>• Earlier detection gives better chances</li>
-                  <li>
-                    • Aim for 15+ degree deflection for guaranteed success
-                  </li>
                 </ul>
               </div>
 
@@ -920,6 +1030,19 @@ export default function DefendEarth() {
           </Card>
         </div>
       )}
+
+      {/* Start button (Figma styled) */}
+      <div className="absolute left-[75px] top-[80%] w-[306px] h-[67.5px] flex items-center justify-center z-10">
+        <div
+          className="bg-[#5e2ac4] w-full h-full rounded-xl flex items-center justify-center gap-3 cursor-pointer shadow-lg"
+          onClick={startSimulation}
+        >
+          {/* <svg width="20" height="22" viewBox="0 0 21 22" fill="none"><path d={svgPaths.p314085c0} fill="white" /></svg>  */}
+          <div className="text-white text-xl font-[Jaini]">
+            Start Simulation
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
