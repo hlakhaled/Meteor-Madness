@@ -16,6 +16,7 @@ const textShadowStyle = {
 export default function Navbar() {
   const [open, setOpen] = useState(false);
 
+  
   return (
     <header className="w-full py-5 px-10 flex items-center justify-between bg-black text-white border-b border-purple-900/20">
       {/* Logo */}
