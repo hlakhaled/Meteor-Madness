@@ -9,6 +9,10 @@
   font-family:"Jaini", "Inter" , system-ui, sans-serif;
 }
 
+.inter-text {
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif !important;
+}
+
 html {
   scroll-behavior: smooth;
 }

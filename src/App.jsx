@@ -16,10 +16,10 @@ function Layout() {
   return (
     <div className="min-h-screen bg-black text-white">
       <Navbar />
-      <div className="p-6">
+      {/* <div className="p-6"> */}
         <Outlet /> {/* where child route content appears */}
       </div>
-    </div>
+    // </div>
   );
 }
 

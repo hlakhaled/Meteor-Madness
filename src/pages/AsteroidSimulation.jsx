@@ -1,153 +1,75 @@
-import React, { useState } from "react";
-import MapComponent from "../components/MapComponent";
-import PurbleButton from "../components/PurbleButton";
-import AsteroidPropertiesCard from "../components/AsteroidPropertiesCard";
-import AsteroidOverlayFrame from "../components/AsteroidOverlayFrame";
-import { motion } from "framer-motion";
+import React, { Suspense } from "react";
+import { Canvas } from "@react-three/fiber";
+import { OrbitControls } from "@react-three/drei";
+import Earth from "../components/Earth";
+import Starfield from "../components/Starfield";
+import AsteroidPanel from "../components/AsteroidPanel";
 
 const AsteroidSimulation = () => {
-  const [showCard, setShowCard] = useState(false);
-  const [showOverlay, setShowOverlay] = useState(false);
-
-  const pageVariants = {
-    hidden: { opacity: 0, y: 40 },
-    show: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" } },
-    exit: { opacity: 0, y: -40, transition: { duration: 0.5 } },
-  };
-
-  const handleAsteroidSave = (data) => {
-    console.log("Saved Asteroid Data:", data);
-    setShowCard(false);
-  };
-
-  const dummyAsteroids = [
-    {
-      title: "2009 JR5",
-      size: "217 - 485 m",
-      speed: "18.1 km/s",
-    },
-    {
-      title: "Apophis",
-      size: "370 m",
-      speed: "7.4 km/s",
-    },
-    {
-      title: "Bennu",
-      size: "490 m",
-      speed: "28 km/s",
-    },
-    {
-      title: "Didymos",
-      size: "780 m",
-      speed: "23 km/s",
-    },
-    {
-      title: "Golevka",
-      size: "530 m",
-      speed: "29.8 km/s",
-    },
-    {
-      title: "Toutatis",
-      size: "2.5 km",
-      speed: "11.6 km/s",
-    },
-    {
-      title: "Florence",
-      size: "4.9 km",
-      speed: "13.5 km/s",
-    },
-    {
-      title: "1981 Midas",
-      size: "2.5 km",
-      speed: "11.5 km/s",
-    },
-    {
-      title: "Florence",
-      size: "4.9 km",
-      speed: "13.5 km/s",
-    },
-    {
-      title: "1981 Midas",
-      size: "2.5 km",
-      speed: "11.5 km/s",
-    },
-    {
-      title: "Florence",
-      size: "4.9 km",
-      speed: "13.5 km/s",
-    },
-    {
-      title: "1981 Midas",
-      size: "2.5 km",
-      speed: "11.5 km/s",
-    },
-    {
-      title: "Florence",
-      size: "4.9 km",
-      speed: "13.5 km/s",
-    },
-    {
-      title: "1981 Midas",
-      size: "2.5 km",
-      speed: "11.5 km/s",
-    },
-  ];
-
   return (
-    <motion.div
-      variants={pageVariants}
-      initial="hidden"
-      animate="show"
-      exit="exit"
-      style={{ textAlign: "center", padding: "20px" }}
-    >
-      <MapComponent />
-
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          gap: "20px",
-          marginTop: "20px",
-        }}
-      >
-        <PurbleButton onClick={() => setShowOverlay(true)}>
-          Pick Astroid
-        </PurbleButton>
-
-        <PurbleButton onClick={() => setShowCard(true)}>
-          Create Astroid
-        </PurbleButton>
+    <div style={{
+      width: "100vw",
+      height: "88vh",
+      background: "linear-gradient(135deg, #0a0a0a 0%, #1a0a2e 50%, #0f0f0f 100%)",
+      display: "flex",
+      padding: "20px",
+      gap: "20px",
+      boxSizing: "border-box",
+      overflow: "hidden",
+      fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+    }}>
+      {/* Left Side - 3D Earth View */}
+      <div style={{
+        flex: "1 1 65%",
+        position: "relative",
+        borderRadius: "16px",
+        overflow: "hidden",
+        backgroundColor: "#000",
+        border: "1px solid #5E2AC4",
+        boxShadow: "0 8px 32px rgba(94, 42, 196, 0.3)",
+        minWidth: 0,
+        minHeight: 0
+      }}>
+        <Canvas
+          style={{ display: "block", width: "100%", height: "100%" }}
+          camera={{ position: [0, 0, 5], fov: 45 }}
+        >
+          {/* Lighting setup for GLTF model */}
+          <ambientLight intensity={0.4} />
+          <directionalLight position={[5, 5, 5]} intensity={1.2} />
+          <directionalLight position={[-5, -5, -5]} intensity={0.3} />
+          
+          {/* Animated starfield background */}
+          <Starfield count={5000} />
+          
+          <Suspense fallback={null}>
+            {/* Your GLTF Earth model with adjusted scale */}
+            <Earth scale={1} />
+            <OrbitControls 
+              enableZoom={true} 
+              enablePan={false}
+              minDistance={4}
+              maxDistance={20}
+              autoRotate={true}
+              autoRotateSpeed={0.4}
+              rotateSpeed={0.5}
+            />
+          </Suspense>
+        </Canvas>
       </div>
 
-      {/* Overlay for Create Astroid */}
-      {showCard && (
-        <div
-          onClick={() => setShowCard(false)}
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            width: "100%",
-            height: "100%",
-            backgroundColor: "rgba(0,0,0,0.5)",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            zIndex: 1000,
-          }}
-        >
-          <div onClick={(e) => e.stopPropagation()}>
-            <AsteroidPropertiesCard onSave={handleAsteroidSave} />
-          </div>
-        </div>
-      )}
-
-      {/* Overlay Frame for Pick Astroid */}
-      {showOverlay && (
-        <AsteroidOverlayFrame astroids={dummyAsteroids} onClose={() => setShowOverlay(false)} />
-      )}
-    </motion.div>
+      {/* Right Side - Asteroid Selection Panel */}
+      <div style={{
+        flex: "0 0 500px",
+        minWidth: "320px",
+        maxWidth: "420px",
+        minHeight: 0,
+        display: "flex",
+        flexDirection: "column"
+      }}>
+        <AsteroidPanel />
+      </div>
+    </div>
   );
 };
 
