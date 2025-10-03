@@ -3,8 +3,76 @@ import { assets } from "../assets/assets";
 import Header from "../components/Header";
 import FeatureCard from "../components/FeatureCard";
 import { motion } from "framer-motion";
-
 import GradientCard from "../components/GradientCard";
+
+// Rotating globe component
+const RotatingGlobe = ({ className }) => {
+  const globeEmojis = ["🌎", "🌍", "🌏"];
+  const [currentGlobe, setCurrentGlobe] = React.useState(globeEmojis[0]);
+
+  React.useEffect(() => {
+    let i = 0;
+    const interval = setInterval(() => {
+      setCurrentGlobe(globeEmojis[i++ % globeEmojis.length]);
+    }, 200); // change emoji every 200ms
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <div
+      className={`${className} text-6xl`} // make Earth bigger
+      style={{
+        display: "inline-block",
+        transition: "transform 0.2s linear",
+        transform: "rotate(0deg)",
+      }}
+    >
+      {currentGlobe}
+    </div>
+  );
+};
+
+// Floating emoji component for smooth motion
+const FloatingEmoji = ({ children, size = "4rem", type = "float" }) => {
+  const [pos, setPos] = React.useState({ x: 0, y: 0, rotate: 0 });
+
+  React.useEffect(() => {
+    let frame;
+    let t = 0;
+    const animate = () => {
+      t += 0.02;
+      switch (type) {
+        case "float":
+          setPos({ x: 0, y: Math.sin(t) * 10, rotate: 0 });
+          break;
+        case "sway":
+          setPos({ x: Math.sin(t) * 8, y: 0, rotate: 0 });
+          break;
+        case "rotate":
+          setPos({ x: 0, y: 0, rotate: Math.sin(t) * 15 });
+          break;
+        default:
+          setPos({ x: 0, y: 0, rotate: 0 });
+      }
+      frame = requestAnimationFrame(animate);
+    };
+    animate();
+    return () => cancelAnimationFrame(frame);
+  }, [type]);
+
+  return (
+    <div
+      style={{
+        fontSize: size,
+        display: "inline-block",
+        transform: `translate(${pos.x}px, ${pos.y}px) rotate(${pos.rotate}deg)`,
+      }}
+    >
+      {children}
+    </div>
+  );
+};
+
 export default function AboutChallenge() {
   const sectionVariants = {
     hidden: { opacity: 0, y: 40 },
@@ -16,25 +84,25 @@ export default function AboutChallenge() {
       title: "Interactive World Map",
       description:
         "Click anywhere on Earth to simulate asteroid impacts and see realistic damage zones based on asteroid size and composition.",
-      icon: "🌍",
+      icon: <RotatingGlobe />,
     },
     {
       title: "Deflection Mini-Game",
       description:
         "Test your skills as a planetary defender! Adjust deflection angles to redirect incoming asteroids away from Earth.",
-      icon: "🚀",
+      icon: <FloatingEmoji type="float">🚀</FloatingEmoji>,
     },
     {
       title: "Educational Content",
       description:
         "Learn fascinating facts about real asteroid impacts, planetary defense strategies, and the science behind cosmic threats.",
-      icon: "📚",
+      icon: <FloatingEmoji type="sway">📚</FloatingEmoji>,
     },
     {
       title: "Realistic Physics",
       description:
         "Experience scientifically accurate simulations based on real asteroid data and impact physics calculations.",
-      icon: "⚗️",
+      icon: <FloatingEmoji type="rotate">⚗️</FloatingEmoji>,
     },
   ];
 
