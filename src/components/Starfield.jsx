@@ -4,29 +4,24 @@ import { useFrame } from "@react-three/fiber";
 const Starfield = ({ count = 5000 }) => {
   const points = useRef();
   
-  // Generate star positions once
   const particlesPosition = useMemo(() => {
     const positions = new Float32Array(count * 3);
     
     for (let i = 0; i < count; i++) {
-      // Create stars in a large sphere around the scene
-      const radius = Math.random() * 25 + 25; // Distance: 25-50 units from center
-      const theta = Math.random() * Math.PI * 2; // Horizontal angle
-      const phi = Math.acos((Math.random() * 2) - 1); // Vertical angle
+      const radius = Math.random() * 25 + 25;
+      const theta = Math.random() * Math.PI * 2;
+      const phi = Math.acos((Math.random() * 2) - 1);
       
-      // Convert spherical coordinates to Cartesian
-      positions[i * 3] = radius * Math.sin(phi) * Math.cos(theta); // x
-      positions[i * 3 + 1] = radius * Math.sin(phi) * Math.sin(theta); // y
-      positions[i * 3 + 2] = radius * Math.cos(phi); // z
+      positions[i * 3] = radius * Math.sin(phi) * Math.cos(theta);
+      positions[i * 3 + 1] = radius * Math.sin(phi) * Math.sin(theta);
+      positions[i * 3 + 2] = radius * Math.cos(phi);
     }
     
     return positions;
   }, [count]);
   
-  // Animate stars with slow rotation
   useFrame((state) => {
     if (points.current) {
-      // Slow rotation effect
       points.current.rotation.y = state.clock.getElapsedTime() * 0.01;
       points.current.rotation.x = state.clock.getElapsedTime() * 0.005;
     }
