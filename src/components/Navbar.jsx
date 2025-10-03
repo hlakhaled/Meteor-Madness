@@ -16,20 +16,20 @@ const textShadowStyle = {
 export default function Navbar() {
   const [open, setOpen] = useState(false);
 
-  
   return (
-    <header className="w-full py-5 px-10 flex items-center justify-between bg-black text-white border-b border-purple-900/20">
+    <header className="w-full py-4 flex items-center justify-between md:justify-around bg-black text-white">
       {/* Logo */}
       <NavLink
         to="/"
-        className="flex items-center gap-3"
+        style={textShadowStyle}
+        className="font-jaini text-2xl sm:text-3xl relative inline-block md:mr-16 lg:mr-32 xl:mr-64"
       >
         <img
           src={assets.rockImage}
-          alt="Meteor"
-          className="w-12 h-12 object-contain"
+          alt="Rocket"
+          className="w-10 h-10 sm:w-24 sm:h-24"
         />
-        <span className="font-bold text-xl tracking-wide">
+        <span className="absolute top-1/2 left-1/2 transform -translate-x-1/5 -translate-y-1/2 text-white font-bold text-l l:text-l drop-shadow-lg whitespace-nowrap">
           Meteor Madness
         </span>
       </NavLink>
@@ -42,9 +42,9 @@ export default function Navbar() {
               <NavLink
                 to={link.to}
                 className={({ isActive }) =>
-                  `text-base font-medium inline-block transform transition-all duration-300 ease-in-out hover:text-purple-400 ${
+                  `font-jaini text-lg lg:text-xl inline-block transform transition-transform duration-300 ease-in-out lg:hover:-translate-y-0.5 hover:[text-shadow:_0px_5px_9px_rgb(140_88_243_/_0.70)] ${
                     isActive
-                      ? "underline underline-offset-[6px] decoration-2 decoration-[#8b58f2]"
+                      ? "underline underline-offset-4 decoration-[#8b58f2]"
                       : ""
                   }`
                 }
@@ -66,14 +66,14 @@ export default function Navbar() {
 
       {/* Mobile Menu */}
       {open && (
-        <nav className="absolute top-20 left-0 w-full bg-black px-6 pb-4 md:hidden border-b border-purple-900/20 z-50">
+        <nav className="absolute top-16 left-0 w-full bg-black px-6 pb-4 md:hidden">
           <ul className="flex flex-col gap-4">
             {navLinks.map((link, idx) => (
               <li key={idx}>
                 <NavLink
                   to={link.to}
                   className={({ isActive }) =>
-                    `text-base font-medium block transform transition-all duration-300 ease-in-out hover:text-purple-400 hover:translate-x-1 ${
+                    `font-jaini text-lg block transform transition-transform duration-300 ease-in-out hover:translate-x-1 hover:[text-shadow:_0px_5px_9px_rgb(140_88_243_/_0.70)] ${
                       isActive
                         ? "underline underline-offset-4 decoration-[#8b58f2]"
                         : ""

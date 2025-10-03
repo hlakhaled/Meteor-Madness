@@ -1,5 +1,10 @@
 import React, { useRef, useEffect } from "react";
-import { BrowserRouter as Router, Routes, Route, Outlet } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Outlet,
+} from "react-router-dom";
 
 import ExplorePage from "./pages/ExplorePage";
 import Navbar from "./components/Navbar";
@@ -25,11 +30,9 @@ function App() {
   useEffect(() => {
     if (bgAudioRef.current) {
       bgAudioRef.current.volume = 0.3; // lower background music volume
-      bgAudioRef.current
-        .play()
-        .catch(() => {
-          console.log("Autoplay blocked — waiting for interaction");
-        });
+      bgAudioRef.current.play().catch(() => {
+        console.log("Autoplay blocked — waiting for interaction");
+      });
     }
   }, []);
 
@@ -63,7 +66,10 @@ function App() {
           {/* Pages with navbar */}
           <Route element={<Layout />}>
             <Route path="defend-earth" element={<DefendEarth />} />
-            <Route path="asteroid-simulation" element={<AsteroidSimulation />} />
+            <Route
+              path="asteroid-simulation"
+              element={<AsteroidSimulation />}
+            />
             <Route path="fun-facts" element={<FunFacts />} />
             <Route path="about-challenge" element={<AboutChallenge />} />
           </Route>

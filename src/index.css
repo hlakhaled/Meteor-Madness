@@ -16,3 +16,27 @@
 html {
   scroll-behavior: smooth;
 }
+/*/* styles.css or global.css */
+.scrollbar-purple::-webkit-scrollbar {
+  width: 8px;
+}
+
+.scrollbar-purple::-webkit-scrollbar-track {
+  background: transparent; /* track transparent */
+}
+
+.scrollbar-purple::-webkit-scrollbar-thumb {
+  background-color: transparent; /* fully transparent */
+  border: 2px solid rgba(57, 56, 62, 0.9); /* brighter outline on hover */
+  border-radius: 9999px; /* fully rounded */
+  transition: border-color 0.2s, transform 0.2s;
+}
+
+.scrollbar-purple::-webkit-scrollbar-thumb:hover {
+  border-color: rgba(57, 56, 62, 0.9); /* brighter outline on hover */
+  transform: scaleX(1.2); /* optional: slight width increase on hover */
+}
+
+.scrollbar-purple::-webkit-scrollbar-corner {
+  background: transparent; /* corner transparent */
+}

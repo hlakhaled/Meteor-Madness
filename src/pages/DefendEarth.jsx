@@ -714,9 +714,9 @@ export default function DefendEarth() {
     <div className="bg-black  mx-auto px-6 sm:px-12 lg:px-20 py-12 relative min-h-screen overflow-hidden text-white">
       {/* Left controls column */}
       <div
-        className="absolute left-6 top-0 bottom-6 w-80 overflow-y-auto z-20 space-y-4
-             scrollbar-thin scrollbar-thumb-purple-500 scrollbar-track-gray-900/30
-             p-4"
+        className="absolute left-6 top-0 bottom-0 w-80 p-4 space-y-4 z-20
+             bg-black/70 backdrop-blur-lg shadow-lg rounded-xl
+             overflow-y-auto scrollbar-purple"
       >
         <AsteroidInfo asteroid={gameState.currentAsteroid} />
         <DeflectionControls
