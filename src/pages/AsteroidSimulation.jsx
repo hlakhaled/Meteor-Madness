@@ -1,4 +1,4 @@
-import React, { Suspense, useState } from "react";
+import React, { Suspense, useState, useRef } from "react";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 import Earth from "../components/Earth";
@@ -12,6 +12,19 @@ const AsteroidSimulation = () => {
   const [selectedAsteroid, setSelectedAsteroid] = useState(null);
   const [showFalling, setShowFalling] = useState(false);
   const [showAnalysis, setShowAnalysis] = useState(false);
+
+  // explosion sound
+  const explosionSoundRef = useRef(null);
+
+  // asteroid scaling
+  const getAsteroidSize = (diameter) => {
+    if (!diameter) return 0.05;
+    if (diameter < 50) return 0.02;
+    if (diameter < 500) return 0.05;
+    if (diameter < 2000) return 0.08;
+    if (diameter < 5000) return 0.12;
+    return 0.18;
+  };
 
   const handleTargetSelect = (target) => {
     setSelectedTarget(target);
@@ -27,6 +40,11 @@ const AsteroidSimulation = () => {
   };
 
   const handleFallComplete = () => {
+    if (explosionSoundRef.current) {
+      explosionSoundRef.current.currentTime = 0;
+      explosionSoundRef.current.playbackRate = 1.25;
+      explosionSoundRef.current.play().catch(() => {});
+    }
     setShowFalling(false);
     setShowAnalysis(true);
   };
@@ -48,7 +66,12 @@ const AsteroidSimulation = () => {
           "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
       }}
     >
-      {/* Left Side - 3D Earth View */}
+      {/* Explosion sound */}
+      <audio ref={explosionSoundRef}>
+        <source src="/explosion.mp3" type="audio/mpeg" />
+      </audio>
+
+      {/* Left Side */}
       <div
         style={{
           flex: "1 1 65%",
@@ -71,25 +94,26 @@ const AsteroidSimulation = () => {
             height: "100%",
           }}
         >
-          {/* Lighting setup for GLTF model */}
           <ambientLight intensity={0.4} />
           <directionalLight position={[5, 5, 5]} intensity={1.2} />
           <directionalLight position={[-5, -5, -5]} intensity={0.3} />
           <pointLight position={[0, 0, 10]} intensity={0.5} />
 
           <Suspense fallback={null}>
-            {/* Animated starfield background */}
             <Starfield count={5000} />
 
-            {/* Your GLTF Earth model with adjusted scale */}
-            <Earth scale={1} onTargetSelect={handleTargetSelect} selectedTarget={selectedTarget}/>
+            <Earth
+              scale={1}
+              onTargetSelect={handleTargetSelect}
+              selectedTarget={selectedTarget}
+            />
 
-            {/* Falling asteroid animation */}
             {showFalling && selectedTarget && selectedAsteroid && (
               <AsteroidFall
                 targetPosition={selectedTarget.position}
+                spawnFromTarget={true}   // 👈 tell asteroid to spawn from direction of target
                 onComplete={handleFallComplete}
-                asteroidSize={Math.min(0.08, selectedAsteroid.diameter / 5000)}
+                asteroidSize={getAsteroidSize(selectedAsteroid.diameter)}
               />
             )}
           </Suspense>
@@ -105,7 +129,7 @@ const AsteroidSimulation = () => {
         </Canvas>
       </div>
 
-      {/* Right Side - Asteroid Selection Panel */}
+      {/* Right Side */}
       <div
         style={{
           flex: "0 0 clamp(280px, 35%, 500px)",
@@ -116,11 +140,18 @@ const AsteroidSimulation = () => {
           flexDirection: "column",
         }}
       >
-        <AsteroidPanel onAsteroidSelect={handleAsteroidSelect} selectedTarget={selectedTarget} />
+        <AsteroidPanel
+          onAsteroidSelect={handleAsteroidSelect}
+          selectedTarget={selectedTarget}
+        />
       </div>
 
       {showAnalysis && (
-        <ImpactAnalysis target={selectedTarget} asteroid={selectedAsteroid} onClose={() => setShowAnalysis(false)} />
+        <ImpactAnalysis
+          target={selectedTarget}
+          asteroid={selectedAsteroid}
+          onClose={() => setShowAnalysis(false)}
+        />
       )}
     </div>
   );
